@@ -78,7 +78,7 @@
   .edit-modal .form-row > label { width: 150px; flex-basis: 150px; padding-top: 7px; }
   .field-content { flex: 1; min-width: 0; }
   .field-control { display: flex; align-items: center; gap: 10px; }
-  .delay-control input[type=text] { flex: 0 0 220px !important; width: 220px !important; }
+  .delay-control input[type=text] { flex: 0 0 160px !important; width: 160px !important; }
   .delay-note { max-width: 540px; color: #909399; }
   .field-content input[type=text], .field-content textarea { width: 100%; }
   .field-content textarea { min-height: 90px; }
@@ -246,7 +246,7 @@
         <label>延迟报名时间</label>
         <div class="field-content">
           <div class="field-control delay-control"><input type="text" id="delayMin" placeholder="请输入正整数"><span style="white-space:nowrap;font-size:13px;color:#606266;">分钟</span></div>
-          <div class="field-help delay-note">说明：填写并保存后，该四级来源下的报名记录将在报名后延迟对应分钟数，再传入 X 计划（由定时任务执行）。留空或 0 表示不延迟，报名后直接传入 X 计划。</div>
+          <div class="field-help delay-note">说明：填写并保存后，该精准来源source的报名记录将在报名后延迟对应分钟数，再传入 X 计划（由定时任务执行）。留空或0 表示不延迟，报名后直接传入 X 计划。</div>
           <div class="err" id="delayErr" style="padding-left:0;">请输入非负整数（单位：分钟）。</div>
         </div>
       </div>
