@@ -39,6 +39,7 @@
           <a href="#solution-list">3.2 列表字段与筛选</a>
           <a href="#solution-api">3.3 报名接口延迟逻辑</a>
           <a href="#solution-timer">3.4 定时检查逻辑</a>
+          <a href="#solution-signup-list-time">3.5 报名列表新增传入时间</a>
         </div>
       </div>
       <a href="#annex">五、附件</a>
@@ -61,7 +62,7 @@
         <tr><td>更新时间</td><td>2026-07-20</td></tr>
         <tr><td>需求提出部门</td><td>区域政企合作 / 会员运营渠道部</td></tr>
         <tr><td>涉及系统</td><td>公众号统一平台（BI四级来源配置、报名接口）、X计划</td></tr>
-        <tr><td>涉及模块</td><td>BI四级来源配置、报名列表详情、报名接口、延迟定时任务</td></tr>
+        <tr><td>涉及模块</td><td>BI四级来源配置、报名列表、报名列表详情、报名接口、延迟定时任务</td></tr>
       </table>
     </section>
 
@@ -81,8 +82,8 @@
       <table>
         <tr><th>系统</th><th>模块</th><th>功能点</th><th>优先级</th><th>说明</th><th>详细方案</th></tr>
         <tr>
-          <td rowspan="4" class="mergerow">公众号统一平台</td>
-          <td rowspan="4" class="mergerow">BI 四级来源配置 / 报名接口 / 定时任务</td>
+          <td rowspan="5" class="mergerow">公众号统一平台</td>
+          <td rowspan="5" class="mergerow">BI 四级来源配置 / 报名列表 / 报名接口 / 定时任务</td>
           <td>① 现有来源编辑弹窗新增「延迟报名时间」配置项</td>
           <td><span class="tag p0">P0</span></td>
           <td>在现有来源记录编辑弹窗中，新增按分钟设置的「延迟报名时间」配置项</td>
@@ -105,6 +106,12 @@
           <td><span class="tag p0">P0</span></td>
           <td>每分钟执行，取延迟&gt;0且传入X计划时间为空的记录，到达延迟时间则调 X 计划接口并回填时间</td>
           <td><a href="#solution-timer">查看</a></td>
+        </tr>
+        <tr>
+          <td>⑤ 报名列表新增「传入X计划时间」字段</td>
+          <td><span class="tag p0">P0</span></td>
+          <td>报名列表在「报名时间」右侧、「操作」左侧新增「传入X计划时间」字段，展示报名记录实际传入 X 计划的时间</td>
+          <td><a href="#solution-signup-list-time">查看</a></td>
         </tr>
       </table>
     </section>
@@ -194,8 +201,8 @@
           <h4>3.3.3 后端处理逻辑</h4>
           <p>具体逻辑请查看上方的「报名接口延迟判断流程」。</p>
           <div class="iframe-wrap">
-            <div class="iframe-head"><span>原型预览 · 3.3 完整报名详情新增两字段</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072112" data-preview-title="完整报名详情新增两字段">放大查看</button></div></div>
-            <iframe data-preview-key="signup_list_prototype_v1.0.html" data-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072112" src="about:blank" sandbox="allow-scripts allow-same-origin" height="720"></iframe>
+            <div class="iframe-head"><span>原型预览 · 3.3 完整报名详情新增两字段</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072114" data-preview-title="完整报名详情新增两字段">放大查看</button></div></div>
+            <iframe data-preview-key="signup_list_prototype_v1.0.html" data-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072114" src="about:blank" sandbox="allow-scripts allow-same-origin" height="720"></iframe>
           </div>
         </div>
       </div>
@@ -228,6 +235,26 @@
           </ul>
         </div>
       </div>
+
+      <div class="module" id="solution-signup-list-time">
+        <div class="module-head">3.5 报名列表新增「传入X计划时间」字段</div>
+        <div class="module-body">
+          <h4>3.5.1 前端规则逻辑</h4>
+          <ul>
+            <li>位置：公众号统一平台报名列表，在「报名时间」字段右侧、「操作」字段左侧新增「传入X计划时间」字段。</li>
+            <li>字段展示报名记录实际调用 X 计划报名接口的时间，格式为 YYYY-MM-DD HH:mm:ss。</li>
+            <li>报名记录尚未传入 X 计划时，「传入X计划时间」显示为空；传入后显示真实调用时间。</li>
+          </ul>
+          <h4>3.5.2 交互逻辑</h4>
+          <p>无</p>
+          <h4>3.5.3 后端处理逻辑</h4>
+          <p>无</p>
+          <div class="iframe-wrap">
+            <div class="iframe-head"><span>原型预览 · 3.5 报名列表新增传入X计划时间</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/signup_list_prototype_v1.0.html?focus=list-xplan-time-col&amp;autoscroll=1&amp;v=2026072114" data-preview-title="报名列表新增传入X计划时间">放大查看</button></div></div>
+            <iframe data-preview-key="signup_list_prototype_v1.0.html" data-src="../prototype/signup_list_prototype_v1.0.html?focus=list-xplan-time-col&amp;autoscroll=1&amp;v=2026072114" src="about:blank" sandbox="allow-scripts allow-same-origin" height="620"></iframe>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="annex">
@@ -238,8 +265,8 @@
         <tr><td>截图 B · BI四级来源配置编辑弹窗</td><td>现有编辑弹窗，在「场景值」下方新增「延迟报名时间」配置项</td><td><a href="../annex/02_BI四级来源配置_编辑弹窗.png?v=2026072110" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
         <tr><td>截图 C · 完整报名列表详情弹窗</td><td>完整现有详情字段，用于在「是否传X计划」下方新增两个字段</td><td><a href="../annex/03_报名列表_详情弹窗.png?v=2026072111" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
         <tr><td>截图 D · 报名列表页</td><td>报名详情入口所在的现有报名列表页，用于 3.3 原型背景</td><td><a href="../annex/04_报名列表页.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
-        <tr><td>BI四级来源配置增量原型 v1.0</td><td>现有编辑弹窗新增延迟报名时间 + 列表字段与筛选</td><td><a href="../prototype/prototype_v1.0.html?v=2026072110" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
-        <tr><td>报名列表详情增量原型 v1.0</td><td>报名列表背景 + 完整报名详情 + 新增两字段</td><td><a href="../prototype/signup_list_prototype_v1.0.html?v=2026072111" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
+        <tr><td>BI四级来源配置增量原型 v1.0</td><td>现有编辑弹窗新增延迟报名时间 + 列表字段与筛选</td><td><a href="../prototype/prototype_v1.0.html?v=2026072113" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
+        <tr><td>报名列表详情增量原型 v1.0</td><td>报名列表新增传入X计划时间 + 完整报名详情新增两字段</td><td><a href="../prototype/signup_list_prototype_v1.0.html?v=2026072114" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
       </table>
     </section>
   </main>
