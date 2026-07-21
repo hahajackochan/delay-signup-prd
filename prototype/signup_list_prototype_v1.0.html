@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>报名列表 · 详情字段增量原型</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:#eef1f5;color:#303133}.stage{height:100vh;overflow:auto;position:relative}.screen{display:block;width:2548px;max-width:none;height:auto}.hint{position:fixed;right:24px;top:16px;z-index:20;background:#1abc9c;color:#fff;border:0;border-radius:4px;padding:9px 16px;font-size:13px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15)}.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.28);display:none;z-index:40}.backdrop.show{display:block}.drawer{position:fixed;top:0;right:0;height:100%;width:500px;max-width:94vw;background:#fff;box-shadow:-5px 0 22px rgba(0,0,0,.18);transform:translateX(100%);transition:transform .22s;z-index:50;display:flex;flex-direction:column}.drawer.show{transform:translateX(0)}.drawer-head{height:52px;background:#1abc9c;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:15px;font-weight:600}.close{font-size:22px;cursor:pointer}.drawer-body{padding:14px 18px;overflow-y:auto}.row{display:flex;gap:12px;padding:11px 10px;border-bottom:1px solid #f0f2f5;font-size:13px}.row .k{width:140px;flex:0 0 140px;color:#909399}.row .v{flex:1;color:#303133}.newfield{background:#e8f8f2;border-radius:4px;margin:3px 0}.focus-hl{outline:2px solid #ff9800;outline-offset:-2px;box-shadow:0 0 0 3px rgba(255,152,0,.18)}.success{color:#1abc9c;font-weight:600}@media(max-width:800px){.screen{width:1900px}.drawer{width:440px}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <img class="screen" src="../annex/04_报名列表页.png" alt="报名列表现状截图">
+  <button class="hint" onclick="openDetail()">👁 查看第1条报名详情</button>
+</div>
+<div id="backdrop" class="backdrop" onclick="closeDetail()"></div>
+<div id="drawer" class="drawer">
+  <div class="drawer-head"><span>详细信息</span><span class="close" onclick="closeDetail()">×</span></div>
+  <div class="drawer-body">
+    <div class="row"><div class="k">是否传X计划</div><div class="v">是</div></div>
+    <div class="row newfield" id="detDelay"><div class="k">延迟报名时间</div><div class="v">30 分钟</div></div>
+    <div class="row newfield" id="detXtime"><div class="k">传入X计划时间</div><div class="v">2026-07-21 17:22:22</div></div>
+    <div class="row"><div class="k">X计划参考详情</div><div class="v">查看参数详情</div></div>
+    <div class="row"><div class="k">X计划报名状态</div><div class="v success">成功</div></div>
+    <div class="row"><div class="k">衣柜潜客类型</div><div class="v">意向潜客</div></div>
+    <div class="row"><div class="k">是否测试记录</div><div class="v">否</div></div>
+    <div class="row"><div class="k">来源标识</div><div class="v">京东咨询</div></div>
+    <div class="row"><div class="k">报名时间</div><div class="v">2026-07-21 16:52:22</div></div>
+  </div>
+</div>
+<script>
+function openDetail(){document.getElementById('drawer').classList.add('show');document.getElementById('backdrop').classList.add('show')}
+function closeDetail(){document.getElementById('drawer').classList.remove('show');document.getElementById('backdrop').classList.remove('show')}
+const focus=new URLSearchParams(location.search).get('focus');
+if(focus==='detail-fields'){
+  openDetail();
+  document.getElementById('detDelay').classList.add('focus-hl');
+  document.getElementById('detXtime').classList.add('focus-hl');
+}
+</script>
+</body>
+</html>

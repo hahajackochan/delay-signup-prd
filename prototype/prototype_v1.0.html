@@ -151,7 +151,7 @@
     </div>
 
     <div class="content">
-      <!-- ====== 截图01 列表页（增量：延迟设置按钮 + 延迟报名列 + 延迟报名筛选） ====== -->
+      <!-- ====== 截图01 列表页（增量：延迟报名列 + 延迟报名筛选） ====== -->
       <div class="panel" id="list">
         <div class="toolbar">
           <input type="text" placeholder="输入关键词搜索">
@@ -207,23 +207,26 @@
   </div>
 </div>
 
-<!-- ====== 截图02 延迟设置弹窗（新增，非复用编辑弹窗） ====== -->
-<div class="mask" id="delayMask">
-  <div class="modal sm">
-    <div class="modal-head"><span>延迟报名设置</span><span class="x" onclick="closeDelay()">×</span></div>
+<!-- ====== 截图02 现有编辑弹窗（增量：新增延迟报名时间配置项） ====== -->
+<div class="mask" id="editMask">
+  <div class="modal">
+    <div class="modal-head"><span>编辑</span><span class="x" onclick="closeEdit()">×</span></div>
     <div class="modal-body">
-      <div class="tip-box" id="delayCtx">山东-淄博碧桂园（精确来源：sdbgy140）</div>
-      <div class="form-row" style="margin-top:14px;">
-        <label>延迟报名时间<span class="req">*</span></label>
+      <div class="form-row"><label>类型年份<span class="req">*</span></label><input type="text" id="editType" value="【小程序】 2026"></div>
+      <div class="form-row"><label>X计划四级来源<span class="req">*</span></label><input type="text" id="editX4" value="山东-淄博碧桂园"></div>
+      <div class="form-row"><label>是否意向来源<span class="req">*</span></label><div class="radio-grp"><label><input type="radio" name="intent"> 是</label><label><input type="radio" name="intent" checked> 否</label></div></div>
+      <div class="form-row" id="editDelayRow">
+        <label>延迟报名时间</label>
         <input type="text" id="delayMin" placeholder="请输入正整数">
         <span style="white-space:nowrap;font-size:13px;color:#606266;">分钟</span>
       </div>
-      <div class="form-row"><div class="err" id="delayErr">请输入大于0的正整数（单位：分钟）。</div></div>
-      <div class="tip-box">说明：填写并保存后，该四级来源下的报名记录将在报名后延迟对应分钟数，再传入 X 计划（由定时任务执行）。留空或 0 表示不延迟，报名后直接传入 X 计划。</div>
+      <div class="form-row"><div class="err" id="delayErr">请输入非负整数（单位：分钟）。</div></div>
+      <div class="form-row"><label>精确来源<span class="req">*</span></label><textarea id="editExact">sdbgy140</textarea></div>
+      <div class="form-row"><label>模糊来源</label><textarea></textarea></div>
     </div>
     <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeDelay()">取消</button>
-      <button class="btn btn-teal" onclick="saveDelay()">保存</button>
+      <button class="btn btn-ghost" onclick="closeEdit()">取消</button>
+      <button class="btn btn-teal" onclick="saveEdit()">保存</button>
     </div>
   </div>
 </div>
@@ -280,8 +283,7 @@
         <td class="newcol"><span class="${isDelay?'badge-yes':'badge-no'}">${isDelay?'是':'否'}</span></td>
         <td>${r.updater}</td><td>${r.utime}</td><td>${r.creater}</td><td>${r.ctime}</td>
         <td><div class="op-grp">
-          <button class="btn btn-teal" style="height:28px;padding:0 10px;">编辑</button>
-          <button class="btn btn-teal" style="height:28px;padding:0 10px;" onclick="openDelay('${r.id}')">延迟设置</button>
+          <button class="btn btn-teal" style="height:28px;padding:0 10px;" onclick="openEdit('${r.id}')">编辑</button>
           <button class="btn btn-orange" style="height:28px;padding:0 10px;">删除</button>
         </div></td>`;
       body.appendChild(tr);
@@ -290,29 +292,35 @@
   document.getElementById('filterDelay').addEventListener('change', render);
   render();
 
-  // ---------- 延迟设置弹窗 ----------
+  // ---------- 现有编辑弹窗（增量：延迟报名时间配置项） ----------
   let curId = null;
-  function openDelay(id) {
+  function openEdit(id) {
     curId = id;
     const r = rows.find(x => x.id === id);
-    document.getElementById('delayCtx').textContent = `${r.x4}（精确来源：${r.exact}）`;
-    document.getElementById('delayMin').value = '';
+    document.getElementById('editType').value = r.type;
+    document.getElementById('editX4').value = r.x4;
+    document.getElementById('editExact').value = r.exact;
+    document.getElementById('delayMin').value = delayCfg[id] || '';
     document.getElementById('delayErr').style.display = 'none';
-    document.getElementById('delayMask').classList.add('show');
+    document.getElementById('editMask').classList.add('show');
   }
-  function closeDelay() { document.getElementById('delayMask').classList.remove('show'); }
-  function saveDelay() {
+  function closeEdit() { document.getElementById('editMask').classList.remove('show'); }
+  function saveEdit() {
     const v = document.getElementById('delayMin').value.trim();
-    const n = Number(v);
-    if (v === '' || !Number.isInteger(n) || n < 0) {
-      document.getElementById('delayErr').textContent = '请输入非负整数（单位：分钟），0 表示不延迟。';
-      document.getElementById('delayErr').style.display = 'block';
-      return;
+    if (v !== '') {
+      const n = Number(v);
+      if (!Number.isInteger(n) || n < 0) {
+        document.getElementById('delayErr').textContent = '请输入非负整数（单位：分钟）。';
+        document.getElementById('delayErr').style.display = 'block';
+        return;
+      }
+      delayCfg[curId] = n;
+    } else {
+      delayCfg[curId] = 0;
     }
-    delayCfg[curId] = n;
-    closeDelay();
+    closeEdit();
     render();
-    toast(n > 0 ? `已设置延迟报名：${n} 分钟，延迟报名标记为「是」` : '已关闭延迟报名（延迟=0），标记「否」');
+    toast('保存成功');
   }
 
   // ---------- 报名详情抽屉（演示新增两字段） ----------
@@ -338,11 +346,11 @@
     if (f === 'list-delay-col') {
       const th = document.getElementById('colDelay');
       if (th) th.classList.add('col-hl');
-    } else if (f === 'list-delay-btn') {
-      // 3.1 定位修改项：高亮列表操作列新增的「延迟设置」按钮（不自动打开弹窗）
-      const btns = document.querySelectorAll('#srcBody button');
-      const target = [...btns].find(b => b.textContent.trim() === '延迟设置');
-      if (target) target.classList.add('focus-hl');
+    } else if (f === 'edit-delay-field' || f === 'list-delay-btn') {
+      // 3.1 修改项位于现有编辑弹窗内：打开编辑弹窗并高亮新增配置项
+      openEdit('22795');
+      const row = document.getElementById('editDelayRow');
+      if (row) row.classList.add('focus-hl');
     } else if (f === 'list-delay-filter') {
       document.getElementById('filterDelay').classList.add('focus-hl');
     } else if (f === 'detail-fields') {

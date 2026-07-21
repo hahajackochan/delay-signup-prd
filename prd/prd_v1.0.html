@@ -35,7 +35,7 @@
       <div class="toc-group" id="solutionTocGroup">
         <button class="toc-parent" type="button" onclick="toggleSolutionToc()"><span>四、详细方案</span><span class="toc-arrow">▼</span></button>
         <div class="toc-sub">
-          <a href="#solution-delay-setting">3.1 延迟设置按钮与弹窗</a>
+          <a href="#solution-delay-setting">3.1 编辑弹窗新增延迟配置</a>
           <a href="#solution-list">3.2 列表字段与筛选</a>
           <a href="#solution-api">3.3 报名接口延迟逻辑</a>
           <a href="#solution-timer">3.4 定时检查逻辑</a>
@@ -83,15 +83,15 @@
         <tr>
           <td rowspan="4" class="mergerow">公众号统一平台</td>
           <td rowspan="4" class="mergerow">BI 四级来源配置 / 报名接口 / 定时任务</td>
-          <td>① 来源记录新增「延迟设置」按钮与设置弹窗</td>
+          <td>① 现有来源编辑弹窗新增「延迟报名时间」配置项</td>
           <td><span class="tag p0">P0</span></td>
-          <td>列表操作列在「编辑」按钮右侧新增「延迟设置」按钮，弹窗按分钟设置延迟报名时间</td>
+          <td>在现有来源记录编辑弹窗中，新增按分钟设置的「延迟报名时间」配置项</td>
           <td><a href="#solution-delay-setting">查看</a></td>
         </tr>
         <tr>
           <td>② 列表新增「延迟报名」字段与筛选</td>
           <td><span class="tag p0">P0</span></td>
-          <td>列表在「场景值」列右侧新增延迟报名列（是/否），搜索按钮左侧新增延迟报名筛选（全部/是/否）</td>
+          <td>列表在「场景值」列右侧新增延迟报名列（是/否），在关键词搜索框右侧、搜索按钮左侧新增延迟报名筛选（全部/是/否）</td>
           <td><a href="#solution-list">查看</a></td>
         </tr>
         <tr>
@@ -113,12 +113,12 @@
       <h2>四、详细方案</h2>
 
       <div class="module" id="solution-delay-setting">
-        <div class="module-head">3.1 来源记录新增「延迟设置」按钮与设置弹窗</div>
+        <div class="module-head">3.1 现有来源编辑弹窗新增「延迟报名时间」配置项</div>
         <div class="module-body">
           <h4>3.1.1 前端规则逻辑</h4>
           <ul>
-            <li>位置：BI 四级来源配置列表页，「操作」列中，在「编辑」按钮<strong>右侧</strong>新增「延迟设置」按钮。</li>
-            <li>弹窗标题「延迟报名设置」；弹窗上方展示当前来源名称与当前已配置的延迟时间：四级来源名称 XXXX（精确来源：XXXX）；当前延迟报名时间：NN 分钟。</li>
+            <li>位置：BI 四级来源配置列表页，点击现有记录「编辑」按钮打开的编辑弹窗中。</li>
+            <li>在现有编辑弹窗「是否意向来源」下方、「精确来源」上方新增「延迟报名时间」配置项，单位为分钟。</li>
             <li>校验：必须为非负整数。</li>
             <li>展示映射：保存后列表「延迟报名」列按配置值 &gt;0 显示「是」（标记延迟报名=是），0 或空表示不延迟、显示「否」。</li>
           </ul>
@@ -127,8 +127,8 @@
           <h4>3.1.3 后端处理逻辑</h4>
           <p>无</p>
           <div class="iframe-wrap">
-            <div class="iframe-head"><span>原型预览 · 3.1 延迟设置弹窗（当前延迟时间展示）</span><div class="iframe-actions"><button class="preview-btn" data-preview-src="../prototype/prototype_v1.0.html?focus=list-delay-btn" data-preview-title="延迟设置弹窗">放大查看</button></div></div>
-            <iframe data-preview-key="prototype_v1.0.html" data-src="../prototype/prototype_v1.0.html?focus=list-delay-btn" src="about:blank" sandbox="allow-scripts allow-same-origin" height="620"></iframe>
+            <div class="iframe-head"><span>原型预览 · 3.1 现有编辑弹窗新增延迟报名时间</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/prototype_v1.0.html?focus=edit-delay-field" data-preview-title="编辑弹窗新增延迟报名时间">放大查看</button></div></div>
+            <iframe data-preview-key="prototype_v1.0.html" data-src="../prototype/prototype_v1.0.html?focus=edit-delay-field" src="about:blank" sandbox="allow-scripts allow-same-origin" height="620"></iframe>
           </div>
         </div>
       </div>
@@ -139,7 +139,7 @@
           <h4>3.2.1 前端规则逻辑</h4>
           <ul>
             <li>位置：列表页表头，在「场景值」列<strong>右侧</strong>新增「延迟报名」列；每行展示「是」/「否」。</li>
-            <li>位置：列表筛选区，在「搜索」按钮<strong>左侧</strong>新增「延迟报名」下拉筛选（全部 / 是 / 否）。</li>
+            <li>位置：列表筛选区，在关键词搜索框<strong>右侧</strong>、搜索按钮<strong>左侧</strong>新增「延迟报名」下拉筛选（全部 / 是 / 否）。</li>
             <li>展示映射：延迟报名配置 &gt; 0 → 「是」；否则「否」。</li>
           </ul>
           <h4>3.2.2 交互逻辑</h4>
@@ -147,7 +147,7 @@
           <h4>3.2.3 后端处理逻辑</h4>
           <p>无</p>
           <div class="iframe-wrap">
-            <div class="iframe-head"><span>原型预览 · 3.2 列表新增列与筛选（样例：是/否）</span><div class="iframe-actions"><button class="preview-btn" data-preview-src="../prototype/prototype_v1.0.html?focus=list-delay-col" data-preview-title="列表新增列与筛选">放大查看</button></div></div>
+            <div class="iframe-head"><span>原型预览 · 3.2 列表新增列与筛选（样例：是/否）</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/prototype_v1.0.html?focus=list-delay-col" data-preview-title="列表新增列与筛选">放大查看</button></div></div>
             <iframe data-preview-key="prototype_v1.0.html" data-src="../prototype/prototype_v1.0.html?focus=list-delay-col" src="about:blank" sandbox="allow-scripts allow-same-origin" height="620"></iframe>
           </div>
         </div>
@@ -193,8 +193,8 @@
           <h4>3.3.3 后端处理逻辑</h4>
           <p>具体逻辑请查看上方的「报名接口延迟判断流程」。</p>
           <div class="iframe-wrap">
-            <div class="iframe-head"><span>原型预览 · 3.3 报名详情新增两字段</span><div class="iframe-actions"><button class="preview-btn" data-preview-src="../prototype/prototype_v1.0.html?focus=detail-fields" data-preview-title="报名详情新增两字段">放大查看</button></div></div>
-            <iframe data-preview-key="prototype_v1.0.html" data-src="../prototype/prototype_v1.0.html?focus=detail-fields" src="about:blank" sandbox="allow-scripts allow-same-origin" height="640"></iframe>
+            <div class="iframe-head"><span>原型预览 · 3.3 报名列表详情新增两字段</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields" data-preview-title="报名列表详情新增两字段">放大查看</button></div></div>
+            <iframe data-preview-key="signup_list_prototype_v1.0.html" data-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields" src="about:blank" sandbox="allow-scripts allow-same-origin" height="640"></iframe>
           </div>
         </div>
       </div>
@@ -233,10 +233,12 @@
       <h2>五、附件</h2>
       <table>
         <tr><th>附件</th><th>说明</th><th>入口</th></tr>
-        <tr><td>截图 A · BI四级来源配置列表页</td><td>现有列表页布局，用于增量新增延迟设置按钮、延迟报名列与筛选</td><td><a href="../annex/01_BI四级来源配置_列表页.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
-        <tr><td>截图 B · BI四级来源配置编辑弹窗</td><td>现有编辑弹窗，本次需求不改编辑弹窗（延迟配置走独立弹窗）</td><td><a href="../annex/02_BI四级来源配置_编辑弹窗.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
-        <tr><td>截图 C · 报名列表详情弹窗</td><td>现有详情弹窗，用于在其下新增延迟报名时间、传入X计划时间两字段</td><td><a href="../annex/03_报名列表_详情弹窗.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
-        <tr><td>高保真增量原型 v1.0</td><td>列表页 + 延迟设置弹窗 + 报名详情两字段</td><td><a href="../prototype/prototype_v1.0.html" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
+        <tr><td>截图 A · BI四级来源配置列表页</td><td>现有列表页布局，用于增量新增延迟报名列与筛选</td><td><a href="../annex/01_BI四级来源配置_列表页.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
+        <tr><td>截图 B · BI四级来源配置编辑弹窗</td><td>现有编辑弹窗，用于新增「延迟报名时间」配置项</td><td><a href="../annex/02_BI四级来源配置_编辑弹窗.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
+        <tr><td>截图 C · 报名列表详情弹窗</td><td>现有详情弹窗，用于在「是否传X计划」下方新增两个字段</td><td><a href="../annex/03_报名列表_详情弹窗.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
+        <tr><td>截图 D · 报名列表页</td><td>报名详情入口所在的现有报名列表页，用于 3.3 原型背景</td><td><a href="../annex/04_报名列表页.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
+        <tr><td>BI四级来源配置增量原型 v1.0</td><td>现有编辑弹窗新增延迟报名时间 + 列表字段与筛选</td><td><a href="../prototype/prototype_v1.0.html" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
+        <tr><td>报名列表详情增量原型 v1.0</td><td>报名列表背景 + 报名详情新增两字段</td><td><a href="../prototype/signup_list_prototype_v1.0.html" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
       </table>
     </section>
   </main>
@@ -270,17 +272,22 @@
     else { src.style.display = 'block'; grap.style.display = 'none'; btn.textContent = '查看流程图'; }
   }
 
-  const previewModal = document.getElementById('previewModal');
+  let previewModal = null;
   function openPreviewModal(src, title) {
+    previewModal = previewModal || document.getElementById('previewModal');
     document.getElementById('previewModalTitle').textContent = title || '原型预览';
     document.getElementById('previewModalFrame').src = src;
     previewModal.classList.add('show');
   }
-  function closePreviewModal() { previewModal.classList.remove('show'); document.getElementById('previewModalFrame').src = 'about:blank'; }
-  document.querySelectorAll('.preview-btn[data-preview-src]').forEach(btn => {
-    btn.addEventListener('click', () => openPreviewModal(btn.dataset.previewSrc, btn.dataset.previewTitle));
+  function closePreviewModal() {
+    previewModal = previewModal || document.getElementById('previewModal');
+    previewModal.classList.remove('show');
+    document.getElementById('previewModalFrame').src = 'about:blank';
+  }
+  window.addEventListener('DOMContentLoaded', () => {
+    previewModal = document.getElementById('previewModal');
+    previewModal.addEventListener('click', (e) => { if (e.target === previewModal) closePreviewModal(); });
   });
-  previewModal.addEventListener('click', (e) => { if (e.target === previewModal) closePreviewModal(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePreviewModal(); });
 </script>
 
