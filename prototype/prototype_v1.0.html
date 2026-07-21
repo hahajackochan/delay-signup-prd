@@ -78,6 +78,8 @@
   .edit-modal .form-row > label { width: 150px; flex-basis: 150px; padding-top: 7px; }
   .field-content { flex: 1; min-width: 0; }
   .field-control { display: flex; align-items: center; gap: 10px; }
+  .delay-control input[type=text] { flex: 0 0 220px !important; width: 220px !important; }
+  .delay-note { max-width: 540px; color: #909399; }
   .field-content input[type=text], .field-content textarea { width: 100%; }
   .field-content textarea { min-height: 90px; }
   .field-help { margin-top: 7px; color: #909399; font-size: 12px; line-height: 1.55; }
@@ -94,17 +96,6 @@
   .tip-box { background: #f4f8fb; border: 1px solid #e3eef5; border-radius: 4px; padding: 10px 12px; font-size: 12px; color: #606266; line-height: 1.6; }
   .radio-grp { display: flex; gap: 18px; }
   .radio-grp label { width: auto; }
-  /* ---------- 报名详情抽屉 ---------- */
-  .drawer { position: fixed; top: 0; right: 0; height: 100%; width: 480px; max-width: 94vw; background: #fff; box-shadow: -4px 0 16px rgba(0,0,0,.12); transform: translateX(100%); transition: transform .25s; z-index: 60; display: flex; flex-direction: column; }
-  .drawer.show { transform: translateX(0); }
-  .drawer-head { background: #1abc9c; color: #fff; padding: 13px 16px; display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600; }
-  .drawer-body { padding: 16px; overflow-y: auto; flex: 1; }
-  .det-row { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid #f0f2f5; font-size: 13px; }
-  .det-row .k { width: 130px; flex: 0 0 130px; color: #909399; }
-  .det-row .v { flex: 1; color: #303133; }
-  .v.success { color: #f56c6c; font-weight: 600; }
-  .param-box { border: 1px solid #ebeef4; border-radius: 4px; padding: 8px 10px; color: #606266; display: inline-block; font-size: 12px; }
-  .newfield { background: #e8f8f2; border-radius: 4px; }
   /* ---------- Focus 高亮 ---------- */
   .focus-hl { outline: 2px solid #ff9800; outline-offset: -2px; box-shadow: 0 0 0 3px rgba(255,152,0,.18); border-radius: 4px; }
   .col-hl { position: relative; }
@@ -254,7 +245,8 @@
       <div class="form-row" id="editDelayRow">
         <label>延迟报名时间</label>
         <div class="field-content">
-          <div class="field-control"><input type="text" id="delayMin" placeholder="请输入正整数"><span style="white-space:nowrap;font-size:13px;color:#606266;">分钟</span></div>
+          <div class="field-control delay-control"><input type="text" id="delayMin" placeholder="请输入正整数"><span style="white-space:nowrap;font-size:13px;color:#606266;">分钟</span></div>
+          <div class="field-help delay-note">说明：填写并保存后，该四级来源下的报名记录将在报名后延迟对应分钟数，再传入 X 计划（由定时任务执行）。留空或 0 表示不延迟，报名后直接传入 X 计划。</div>
           <div class="err" id="delayErr" style="padding-left:0;">请输入非负整数（单位：分钟）。</div>
         </div>
       </div>
@@ -264,24 +256,6 @@
       </div>
     </div>
     <div class="modal-foot"><button class="btn btn-teal" onclick="saveEdit()">保存设置</button></div>
-  </div>
-</div>
-
-<!-- ====== 截图03 报名详情抽屉（增量：延迟报名时间 + 传入X计划时间 两字段） ====== -->
-<div class="drawer" id="detDrawer">
-  <div class="drawer-head"><span>详细信息</span><span class="x" style="cursor:pointer;" onclick="closeDrawer()">×</span></div>
-  <div class="drawer-body">
-    <div class="det-row"><div class="k">是否传X计划</div><div class="v">是</div></div>
-    <!-- 增量：在「是否传X计划」下方新增两字段 -->
-    <div class="det-row newfield" id="detDelay"><div class="k">延迟报名时间</div><div class="v" id="detDelayV">30 分钟</div></div>
-    <div class="det-row newfield" id="detXtime"><div class="k">传入X计划时间</div><div class="v" id="detXtimeV">2026-07-20 14:54:16</div></div>
-    <div class="det-row"><div class="k">X计划参考详情</div><div class="v"><span class="param-box">查看参数详情</span></div></div>
-    <div class="det-row"><div class="k">X计划报名状态</div><div class="v success">成功</div></div>
-    <div class="det-row"><div class="k">衣柜潜客类型</div><div class="v">意向潜客</div></div>
-    <div class="det-row"><div class="k">X计划信息</div><div class="v">预约成功，请留意当地由话020开头电话，广州…</div></div>
-    <div class="det-row"><div class="k">是否测试记录</div><div class="v">否</div></div>
-    <div class="det-row"><div class="k">客户ID</div><div class="v">516401936_m</div></div>
-    <div class="det-row"><div class="k">场景ID</div><div class="v">0</div></div>
   </div>
 </div>
 
@@ -363,14 +337,6 @@
     toast('保存成功');
   }
 
-  // ---------- 报名详情抽屉（演示新增两字段） ----------
-  function openDrawer(delayMin, xTime) {
-    document.getElementById('detDelayV').textContent = delayMin > 0 ? (delayMin + ' 分钟') : '0（不延迟）';
-    document.getElementById('detXtimeV').textContent = xTime;
-    document.getElementById('detDrawer').classList.add('show');
-  }
-  function closeDrawer() { document.getElementById('detDrawer').classList.remove('show'); }
-
   // ---------- Toast ----------
   let toastT;
   function toast(msg) {
@@ -396,16 +362,6 @@
       }
     } else if (f === 'list-delay-filter') {
       document.getElementById('filterDelay').classList.add('focus-hl');
-    } else if (f === 'detail-fields') {
-      document.getElementById('detDelay').classList.add('focus-hl');
-      document.getElementById('detXtime').classList.add('focus-hl');
-      openDrawer(30, '2026-07-20 14:54:16');
-    } else if (f === 'detail-delay') {
-      document.getElementById('detDelay').classList.add('focus-hl');
-      openDrawer(30, '2026-07-20 14:54:16');
-    } else if (f === 'detail-xtime') {
-      document.getElementById('detXtime').classList.add('focus-hl');
-      openDrawer(30, '2026-07-20 14:54:16');
     }
   }
   applyFocus();

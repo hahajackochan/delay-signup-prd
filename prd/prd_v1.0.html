@@ -119,6 +119,7 @@
           <ul>
             <li>位置：BI 四级来源配置列表页，点击现有记录「编辑」按钮打开的编辑弹窗中。</li>
             <li>在现有编辑弹窗「场景值」下方、「分享图」上方新增「延迟报名时间」配置项，单位为分钟。</li>
+            <li>「延迟报名时间」使用短输入框，不占满整行；输入框下方展示说明：填写并保存后，该四级来源下的报名记录将在报名后延迟对应分钟数，再传入 X 计划（由定时任务执行）。留空或 0 表示不延迟，报名后直接传入 X 计划。</li>
             <li>校验：必须为非负整数。</li>
             <li>展示映射：保存后列表「延迟报名」列按配置值 &gt;0 显示「是」（标记延迟报名=是），0 或空表示不延迟、显示「否」。</li>
           </ul>
@@ -193,8 +194,8 @@
           <h4>3.3.3 后端处理逻辑</h4>
           <p>具体逻辑请查看上方的「报名接口延迟判断流程」。</p>
           <div class="iframe-wrap">
-            <div class="iframe-head"><span>原型预览 · 3.3 报名列表详情新增两字段</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields" data-preview-title="报名列表详情新增两字段">放大查看</button></div></div>
-            <iframe data-preview-key="signup_list_prototype_v1.0.html" data-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields" src="about:blank" sandbox="allow-scripts allow-same-origin" height="640"></iframe>
+            <div class="iframe-head"><span>原型预览 · 3.3 完整报名详情新增两字段</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072112" data-preview-title="完整报名详情新增两字段">放大查看</button></div></div>
+            <iframe data-preview-key="signup_list_prototype_v1.0.html" data-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072112" src="about:blank" sandbox="allow-scripts allow-same-origin" height="720"></iframe>
           </div>
         </div>
       </div>
@@ -235,10 +236,10 @@
         <tr><th>附件</th><th>说明</th><th>入口</th></tr>
         <tr><td>截图 A · BI四级来源配置列表页</td><td>现有列表页布局，用于增量新增延迟报名列与筛选</td><td><a href="../annex/01_BI四级来源配置_列表页.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
         <tr><td>截图 B · BI四级来源配置编辑弹窗</td><td>现有编辑弹窗，在「场景值」下方新增「延迟报名时间」配置项</td><td><a href="../annex/02_BI四级来源配置_编辑弹窗.png?v=2026072110" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
-        <tr><td>截图 C · 报名列表详情弹窗</td><td>现有详情弹窗，用于在「是否传X计划」下方新增两个字段</td><td><a href="../annex/03_报名列表_详情弹窗.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
+        <tr><td>截图 C · 完整报名列表详情弹窗</td><td>完整现有详情字段，用于在「是否传X计划」下方新增两个字段</td><td><a href="../annex/03_报名列表_详情弹窗.png?v=2026072111" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
         <tr><td>截图 D · 报名列表页</td><td>报名详情入口所在的现有报名列表页，用于 3.3 原型背景</td><td><a href="../annex/04_报名列表页.png" target="_blank" rel="noopener noreferrer">打开图片</a></td></tr>
         <tr><td>BI四级来源配置增量原型 v1.0</td><td>现有编辑弹窗新增延迟报名时间 + 列表字段与筛选</td><td><a href="../prototype/prototype_v1.0.html?v=2026072110" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
-        <tr><td>报名列表详情增量原型 v1.0</td><td>报名列表背景 + 报名详情新增两字段</td><td><a href="../prototype/signup_list_prototype_v1.0.html" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
+        <tr><td>报名列表详情增量原型 v1.0</td><td>报名列表背景 + 完整报名详情 + 新增两字段</td><td><a href="../prototype/signup_list_prototype_v1.0.html?v=2026072111" target="_blank" rel="noopener noreferrer">打开原型</a></td></tr>
       </table>
     </section>
   </main>
