@@ -37,8 +37,8 @@
         <div class="toc-sub">
           <a href="#solution-delay-setting">3.1 编辑弹窗新增延迟配置</a>
           <a href="#solution-list">3.2 列表字段与筛选</a>
-          <a href="#solution-api">3.3 报名接口延迟逻辑</a>
-          <a href="#solution-timer">3.4 定时检查逻辑</a>
+          <a href="#solution-api">3.3 报名接口写入延迟记录</a>
+          <a href="#solution-timer">3.4 延迟数据表定时检查</a>
           <a href="#solution-signup-list-time">3.5 报名列表新增传入时间</a>
         </div>
       </div>
@@ -58,10 +58,10 @@
         <tr><td>项目名称</td><td>延迟报名需求</td></tr>
         <tr><td>产品经理</td><td>陈嘉豪</td></tr>
         <tr><td>当前版本</td><td>v1.0</td></tr>
-        <tr><td>更新时间</td><td>2026-07-20</td></tr>
+        <tr><td>更新时间</td><td>2026-07-23</td></tr>
         <tr><td>需求提出部门</td><td>区域政企合作 / 会员运营渠道部</td></tr>
         <tr><td>涉及系统</td><td>公众号统一平台（BI四级来源配置、报名接口）、X计划</td></tr>
-        <tr><td>涉及模块</td><td>BI四级来源配置、报名列表、报名列表详情、报名接口、延迟定时任务</td></tr>
+        <tr><td>涉及模块</td><td>BI四级来源配置、报名列表、报名列表详情、报名接口、延迟报名数据表、延迟定时任务</td></tr>
       </table>
     </section>
 
@@ -82,7 +82,7 @@
         <tr><th>系统</th><th>模块</th><th>功能点</th><th>优先级</th><th>说明</th><th>详细方案</th></tr>
         <tr>
           <td rowspan="5" class="mergerow">公众号统一平台</td>
-          <td rowspan="5" class="mergerow">BI 四级来源配置 / 报名列表 / 报名接口 / 定时任务</td>
+          <td rowspan="5" class="mergerow">BI 四级来源配置 / 报名列表 / 报名接口 / 延迟报名数据表 / 定时任务</td>
           <td>① 现有来源编辑弹窗新增「延迟报名时间」配置项</td>
           <td><span class="tag p0">P0</span></td>
           <td>在现有来源记录编辑弹窗中，新增按分钟设置的「延迟报名时间」配置项</td>
@@ -95,15 +95,15 @@
           <td><a href="#solution-list">查看</a></td>
         </tr>
         <tr>
-          <td>③ 报名接口新增延迟报名逻辑</td>
+          <td>③ 报名接口新增延迟记录写入逻辑</td>
           <td><span class="tag p0">P0</span></td>
-          <td>业务平台调用报名接口传 source，按微信精确来源（逗号多值精确匹配，不区分大小写）判断是否存在四级记录，决定延迟或直传</td>
+          <td>其他业务系统调用统一平台报名接口时，按传入 source 检查延迟配置；已设置延迟则向新延迟报名数据表新增一条待处理记录，未设置延迟则按原逻辑直接报名</td>
           <td><a href="#solution-api">查看</a></td>
         </tr>
         <tr>
-          <td>④ 新增延迟报名定时检查逻辑</td>
+          <td>④ 新增延迟报名数据表定时检查逻辑</td>
           <td><span class="tag p0">P0</span></td>
-          <td>每分钟执行，取延迟&gt;0且传入X计划时间为空的记录，到达延迟时间则调 X 计划接口并回填时间</td>
+          <td>每分钟查询新延迟报名数据表，检查达到延迟时间且尚未完成报名的记录，并执行 X 计划报名</td>
           <td><a href="#solution-timer">查看</a></td>
         </tr>
         <tr>
@@ -125,7 +125,7 @@
           <ul>
             <li>位置：BI 四级来源配置列表页，点击现有记录「编辑」按钮打开的编辑弹窗中。</li>
             <li>在现有编辑弹窗「场景值」下方、「分享图」上方新增「延迟报名时间」配置项，单位为分钟。</li>
-            <li>「延迟报名时间」使用短输入框，不占满整行；输入框下方展示说明：填写并保存后，该精准来源source的报名记录将在报名后延迟对应分钟数，再传入 X 计划（由定时任务执行）。留空或0 表示不延迟，报名后直接传入 X 计划。</li>
+            <li>「延迟报名时间」使用短输入框，不占满整行；输入框下方展示说明：填写并保存后，该精准来源 source 的报名请求会先写入延迟报名数据表，由定时任务达到延迟时间后再传入 X 计划。留空或 0 表示不延迟，报名后直接传入 X 计划。</li>
             <li>校验：必须为非负整数。</li>
             <li>展示映射：保存后列表「延迟报名」列按配置值 &gt;0 显示「是」（标记延迟报名=是），0 或空表示不延迟、显示「否」。</li>
           </ul>
@@ -161,32 +161,24 @@
       </div>
 
       <div class="module" id="solution-api">
-        <div class="module-head">3.3 报名接口新增延迟报名逻辑</div>
+        <div class="module-head">3.3 报名接口新增延迟记录写入逻辑</div>
         <div class="module-body">
           <div class="mm">
-            <div class="mm-bar"><span>报名接口延迟判断流程</span><button onclick="toggleMM('mm3')">查看源码</button></div>
+            <div class="mm-bar"><span>报名接口写入延迟数据流程</span><button onclick="toggleMM('mm3')">查看源码</button></div>
             <div class="mm-body"><div class="mermaid" id="mm3-g">flowchart TD
-  A[业务平台调用报名接口 传入source] --> B{source非空?}
-  B -- 否 --> C[直接传入X计划]
-  B -- 是 --> D[查询四级来源 取微信精确来源字段]
-  D --> E[按逗号拆分精确来源 转小写精确匹配source]
-  E --> F{命中四级来源记录?}
-  F -- 否 --> C
-  F -- 是 --> G{该记录延迟报名配置>0?}
-  G -- 否 --> C
-  G -- 是 --> H[报名记录写入 延迟报名时间 传入X计划时间留空]
-  C --> I[报名记录写入 延迟报名时间=0 传入X计划时间=真实调用时间]</div></div>
+  A[其他业务系统调用统一平台报名接口 传入source] --> B[按source查询延迟配置]
+  B --> C{source是否设置延迟?}
+  C -- 否 --> D[按原逻辑直接执行X计划报名]
+  C -- 是 --> E[在新延迟报名数据表新增一条待处理记录]
+  E --> F[本次不立即报名 等待定时任务处理]
+  D --> G[回填传入X计划时间为真实调用时间]</div></div>
             <pre class="mm-src" id="mm3">flowchart TD
-  A[业务平台调用报名接口 传入source] --> B{source非空?}
-  B -- 否 --> C[直接传入X计划]
-  B -- 是 --> D[查询四级来源 取微信精确来源字段]
-  D --> E[按逗号拆分精确来源 转小写精确匹配source]
-  E --> F{命中四级来源记录?}
-  F -- 否 --> C
-  F -- 是 --> G{该记录延迟报名配置>0?}
-  G -- 否 --> C
-  G -- 是 --> H[报名记录写入 延迟报名时间 传入X计划时间留空]
-  C --> I[报名记录写入 延迟报名时间=0 传入X计划时间=真实调用时间]</pre>
+  A[其他业务系统调用统一平台报名接口 传入source] --> B[按source查询延迟配置]
+  B --> C{source是否设置延迟?}
+  C -- 否 --> D[按原逻辑直接执行X计划报名]
+  C -- 是 --> E[在新延迟报名数据表新增一条待处理记录]
+  E --> F[本次不立即报名 等待定时任务处理]
+  D --> G[回填传入X计划时间为真实调用时间]</pre>
           </div>
           <h4>3.3.1 前端规则逻辑</h4>
           <ul>
@@ -198,7 +190,12 @@
             <li>报名详情打开即展示上述两字段，值由后端返回（无额外交互）。</li>
           </ul>
           <h4>3.3.3 后端处理逻辑</h4>
-          <p>具体逻辑请查看上方的「报名接口延迟判断流程」。</p>
+          <ul>
+            <li>触发：其他业务系统调用统一平台报名接口时，读取本次请求传入的 <code>source</code>。</li>
+            <li>延迟判断：按现有微信精确来源匹配规则检查该 <code>source</code> 是否设置延迟；逗号多值逐项精确匹配，不区分大小写。</li>
+            <li>已设置延迟：本次不立即执行 X 计划报名，在新的延迟报名数据表中新增一条待处理记录，供定时任务后续查询与报名。</li>
+            <li>未设置延迟：不写入延迟报名数据表，按原逻辑直接执行 X 计划报名。</li>
+          </ul>
           <div class="iframe-wrap">
             <div class="iframe-head"><span>原型预览 · 3.3 完整报名详情新增两字段</span><div class="iframe-actions"><button class="preview-btn" onclick="openPreviewModal(this.dataset.previewSrc,this.dataset.previewTitle)" data-preview-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072114" data-preview-title="完整报名详情新增两字段">放大查看</button></div></div>
             <iframe data-preview-key="signup_list_prototype_v1.0.html" data-src="../prototype/signup_list_prototype_v1.0.html?focus=detail-fields&amp;v=2026072114" src="about:blank" sandbox="allow-scripts allow-same-origin" height="720"></iframe>
@@ -207,30 +204,30 @@
       </div>
 
       <div class="module" id="solution-timer">
-        <div class="module-head">3.4 新增延迟报名定时检查逻辑</div>
+        <div class="module-head">3.4 新增延迟报名数据表定时检查逻辑</div>
         <div class="module-body">
           <div class="mm">
             <div class="mm-bar"><span>定时检查流程</span><button onclick="toggleMM('mm4')">查看源码</button></div>
             <div class="mm-body"><div class="mermaid" id="mm4-g">flowchart TD
-  A[定时任务 每分钟执行] --> B[查询 延迟报名>0 且 传入X计划时间为空]
-  B --> C{当前时间-报名时间 >= 延迟报名时间?}
-  C -- 否 --> D[跳过 不传入]
-  C -- 是 --> E[调用X计划报名接口]
-  E --> F[更新 传入X计划时间=真实调用时间]</div></div>
+  A[定时任务 每分钟执行] --> B[查询新延迟报名数据表中的待处理记录]
+  B --> C{记录是否达到延迟时间?}
+  C -- 否 --> D[跳过 本轮不报名]
+  C -- 是 --> E[执行X计划报名]
+  E --> F[回填传入X计划时间并记录处理结果]</div></div>
             <pre class="mm-src" id="mm4">flowchart TD
-  A[定时任务 每分钟执行] --> B[查询 延迟报名>0 且 传入X计划时间为空]
-  B --> C{当前时间-报名时间 >= 延迟报名时间?}
-  C -- 否 --> D[跳过 不传入]
-  C -- 是 --> E[调用X计划报名接口]
-  E --> F[更新 传入X计划时间=真实调用时间]</pre>
+  A[定时任务 每分钟执行] --> B[查询新延迟报名数据表中的待处理记录]
+  B --> C{记录是否达到延迟时间?}
+  C -- 否 --> D[跳过 本轮不报名]
+  C -- 是 --> E[执行X计划报名]
+  E --> F[回填传入X计划时间并记录处理结果]</pre>
           </div>
           <h4>3.4.1 后端处理逻辑</h4>
           <ul>
             <li>调度：每分钟执行一次。</li>
-            <li>查询：取「延迟报名时间 &gt; 0 且 传入 X 计划时间为空」的报名记录。</li>
-            <li>判断：当前时间 − 报名记录报名时间 ≥ 延迟报名时间 → 触发传入。</li>
-            <li>业务处理：调用 X 计划报名接口执行报名；成功后更新该记录「传入 X 计划时间」= 真实调用时间。</li>
-            <li>未达延迟时间：跳过，不传入 X 计划。</li>
+            <li>查询：查询新的延迟报名数据表，不再从原报名记录表中筛选延迟记录。</li>
+            <li>判断：逐条检查待处理记录是否已达到对应延迟时间。</li>
+            <li>达到延迟时间：执行 X 计划报名；成功后回填原报名记录的「传入 X 计划时间」= 真实调用时间，并记录本次处理结果，避免重复报名。</li>
+            <li>未达延迟时间：跳过，本轮不执行报名。</li>
           </ul>
         </div>
       </div>
